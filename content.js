@@ -1,0 +1,1 @@
+// Placeholder for potential DOM highlight and interaction features.
