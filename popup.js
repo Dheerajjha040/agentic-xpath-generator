@@ -9,13 +9,19 @@ document.getElementById("extract").onclick = async () => {
 document.getElementById("download").onclick = async () => {
   chrome.storage.local.get("xpaths", (result) => {
     const xpaths = result.xpaths || {};
-    const className = "PageObject";
-    let content = `class ${className}:
-`;
+    const className = "GeneratedPage";
+    let content = `from selenium.webdriver.common.by import By\n\n
+class ${className}:
+    def __init__(self, driver):
+        self.driver = driver\n\n`;
+
     for (const key in xpaths) {
-      content += `    ${key} = "${xpaths[key]}"
-`;
+      const method = key.replace(/_xpath$/, '').replace(/_/g, ' ');
+      const camelMethod = method.replace(/ (\w)/g, (_, c) => c.toUpperCase()).replace(/^./, s => s.toLowerCase());
+      content += `    ${key} = (By.XPATH, "${xpaths[key]}")\n`;
+      content += `\n    def get_${camelMethod}(self):\n        return self.driver.find_element(*self.${key})\n\n`;
     }
+
     const blob = new Blob([content], { type: "text/plain" });
     const url = URL.createObjectURL(blob);
     chrome.downloads.download({ url, filename: `${className}.py` });
@@ -51,5 +57,5 @@ function extractXpaths() {
 
   chrome.runtime.sendMessage({ type: "xpaths_extracted", data: results });
   chrome.storage.local.set({ xpaths: results });
-  alert("XPaths extracted! You can now download the Python class.");
+  alert("✅ XPaths extracted! Ready to download Python POM class.");
 }

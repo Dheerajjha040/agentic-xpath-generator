@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
   "name": "AgenticXpathGenerator",
-  "version": "1.0",
-  "description": "Extract smart XPath selectors and generate Python Page Object classes directly from your browser.",
+  "version": "1.1",
+  "description": "Extract smart XPath selectors and generate rich Python Page Object classes directly from your browser.",
   "permissions": ["scripting", "activeTab", "downloads", "storage"],
   "action": {
     "default_popup": "popup.html",
